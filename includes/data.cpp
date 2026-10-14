@@ -65,7 +65,7 @@ void PrintMap(short** map, short n, short m)
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
-        std::cout << (map[i][j] ? "██" : "  ");
+        std::cout << (map[i][j] == 1 ? "██" : (map[i][j] == 5 ? "☠️ " : "  "));
         std::cout << std::endl;
     }
 }

@@ -14,4 +14,4 @@ Remplir le fichier data/map.txt avec les données de la carte :<br>
 **NB : 1 : mur ; 0 : case accessible**
 
 
-###Executer le programme : ./main \<chemin **ABSOLU** du fichier map.txt>
+### Executer le programme : ./main \<chemin **ABSOLU** du fichier map.txt>

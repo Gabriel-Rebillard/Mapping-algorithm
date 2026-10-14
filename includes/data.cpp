@@ -65,7 +65,7 @@ void PrintMap(short** map, short n, short m)
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
-        std::cout << (map[i][j] == 1 ? "██" : (map[i][j] == 5 ? "☠️ " : "  "));
+        std::cout << (map[i][j] == WALL_ID ? WALL_SYMBOL : (map[i][j] == VICTIM_ID ? VICTIM_SYMBOL : ROOM_SYMBOL));
         std::cout << std::endl;
     }
 }

@@ -4,6 +4,14 @@
 #include <string>
 #include <iostream>
 
+#define WALL_ID 1
+#define ROOM_ID 0
+#define VICTIM_ID 5
+
+#define WALL_SYMBOL "██"
+#define ROOM_SYMBOL "  "
+#define VICTIM_SYMBOL "☠️ "
+
 std::ifstream OpenFile(std::string path);
 
 short* GetSize(std::ifstream& file);

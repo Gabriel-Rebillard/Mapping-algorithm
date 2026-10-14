@@ -3,7 +3,7 @@ A project of mapping algorithm for a simulated rescue robot
 
 
 Remplir le fichier data/map.txt avec les données de la carte :
-  -> nombre de lignes    : n\n
+  -> nombre de lignes    : n<br>
   -> nombre de colonnes  : m\n
   -> première ligne      : 111111...1
   -> deuxième ligne      : 100010...1

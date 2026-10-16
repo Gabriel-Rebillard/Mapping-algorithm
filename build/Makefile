@@ -117,17 +117,43 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named dataLib
+# Target rules for targets named mapLib
 
 # Build rule for target.
-dataLib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dataLib
-.PHONY : dataLib
+mapLib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mapLib
+.PHONY : mapLib
 
 # fast build rule for target.
-dataLib/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dataLib.dir/build.make CMakeFiles/dataLib.dir/build
-.PHONY : dataLib/fast
+mapLib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/build
+.PHONY : mapLib/fast
+
+#=============================================================================
+# Target rules for targets named robotLib
+
+# Build rule for target.
+robotLib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 robotLib
+.PHONY : robotLib
+
+# fast build rule for target.
+robotLib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robotLib.dir/build.make CMakeFiles/robotLib.dir/build
+.PHONY : robotLib/fast
+
+#=============================================================================
+# Target rules for targets named statisticsLib
+
+# Build rule for target.
+statisticsLib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 statisticsLib
+.PHONY : statisticsLib
+
+# fast build rule for target.
+statisticsLib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/statisticsLib.dir/build.make CMakeFiles/statisticsLib.dir/build
+.PHONY : statisticsLib/fast
 
 #=============================================================================
 # Target rules for targets named main
@@ -142,29 +168,101 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
-includes/data.o: includes/data.cpp.o
-.PHONY : includes/data.o
+includes/mapGenerator.o: includes/mapGenerator.cpp.o
+.PHONY : includes/mapGenerator.o
 
 # target to build an object file
-includes/data.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dataLib.dir/build.make CMakeFiles/dataLib.dir/includes/data.cpp.o
-.PHONY : includes/data.cpp.o
+includes/mapGenerator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapGenerator.cpp.o
+.PHONY : includes/mapGenerator.cpp.o
 
-includes/data.i: includes/data.cpp.i
-.PHONY : includes/data.i
+includes/mapGenerator.i: includes/mapGenerator.cpp.i
+.PHONY : includes/mapGenerator.i
 
 # target to preprocess a source file
-includes/data.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dataLib.dir/build.make CMakeFiles/dataLib.dir/includes/data.cpp.i
-.PHONY : includes/data.cpp.i
+includes/mapGenerator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapGenerator.cpp.i
+.PHONY : includes/mapGenerator.cpp.i
 
-includes/data.s: includes/data.cpp.s
-.PHONY : includes/data.s
+includes/mapGenerator.s: includes/mapGenerator.cpp.s
+.PHONY : includes/mapGenerator.s
 
 # target to generate assembly for a file
-includes/data.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dataLib.dir/build.make CMakeFiles/dataLib.dir/includes/data.cpp.s
-.PHONY : includes/data.cpp.s
+includes/mapGenerator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapGenerator.cpp.s
+.PHONY : includes/mapGenerator.cpp.s
+
+includes/mapReader.o: includes/mapReader.cpp.o
+.PHONY : includes/mapReader.o
+
+# target to build an object file
+includes/mapReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapReader.cpp.o
+.PHONY : includes/mapReader.cpp.o
+
+includes/mapReader.i: includes/mapReader.cpp.i
+.PHONY : includes/mapReader.i
+
+# target to preprocess a source file
+includes/mapReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapReader.cpp.i
+.PHONY : includes/mapReader.cpp.i
+
+includes/mapReader.s: includes/mapReader.cpp.s
+.PHONY : includes/mapReader.s
+
+# target to generate assembly for a file
+includes/mapReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mapLib.dir/build.make CMakeFiles/mapLib.dir/includes/mapReader.cpp.s
+.PHONY : includes/mapReader.cpp.s
+
+includes/robot.o: includes/robot.cpp.o
+.PHONY : includes/robot.o
+
+# target to build an object file
+includes/robot.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robotLib.dir/build.make CMakeFiles/robotLib.dir/includes/robot.cpp.o
+.PHONY : includes/robot.cpp.o
+
+includes/robot.i: includes/robot.cpp.i
+.PHONY : includes/robot.i
+
+# target to preprocess a source file
+includes/robot.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robotLib.dir/build.make CMakeFiles/robotLib.dir/includes/robot.cpp.i
+.PHONY : includes/robot.cpp.i
+
+includes/robot.s: includes/robot.cpp.s
+.PHONY : includes/robot.s
+
+# target to generate assembly for a file
+includes/robot.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robotLib.dir/build.make CMakeFiles/robotLib.dir/includes/robot.cpp.s
+.PHONY : includes/robot.cpp.s
+
+includes/statistics.o: includes/statistics.cpp.o
+.PHONY : includes/statistics.o
+
+# target to build an object file
+includes/statistics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/statisticsLib.dir/build.make CMakeFiles/statisticsLib.dir/includes/statistics.cpp.o
+.PHONY : includes/statistics.cpp.o
+
+includes/statistics.i: includes/statistics.cpp.i
+.PHONY : includes/statistics.i
+
+# target to preprocess a source file
+includes/statistics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/statisticsLib.dir/build.make CMakeFiles/statisticsLib.dir/includes/statistics.cpp.i
+.PHONY : includes/statistics.cpp.i
+
+includes/statistics.s: includes/statistics.cpp.s
+.PHONY : includes/statistics.s
+
+# target to generate assembly for a file
+includes/statistics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/statisticsLib.dir/build.make CMakeFiles/statisticsLib.dir/includes/statistics.cpp.s
+.PHONY : includes/statistics.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -198,11 +296,22 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... dataLib"
 	@echo "... main"
-	@echo "... includes/data.o"
-	@echo "... includes/data.i"
-	@echo "... includes/data.s"
+	@echo "... mapLib"
+	@echo "... robotLib"
+	@echo "... statisticsLib"
+	@echo "... includes/mapGenerator.o"
+	@echo "... includes/mapGenerator.i"
+	@echo "... includes/mapGenerator.s"
+	@echo "... includes/mapReader.o"
+	@echo "... includes/mapReader.i"
+	@echo "... includes/mapReader.s"
+	@echo "... includes/robot.o"
+	@echo "... includes/robot.i"
+	@echo "... includes/robot.s"
+	@echo "... includes/statistics.o"
+	@echo "... includes/statistics.i"
+	@echo "... includes/statistics.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

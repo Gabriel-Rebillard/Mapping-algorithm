@@ -1,18 +1,7 @@
+#pragma once
 #include <vector>
-#include <string>
+#include "cfg.h"
 
-#ifndef uint8_t
-    typedef unsigned char uint8_t;
-#endif
-#ifndef uint16_t
-    typedef unsigned short uint16_t;
-#endif
-
-#define Nan -1
-#define UNKNOWN_ID Nan
-#define WALL_ID 0
-#define ROOM_ID 1
-#define VICTIM_ID 2
 
 enum direction
 {
@@ -26,11 +15,16 @@ class Robot
 {   
     private:
         std::vector<std::vector<uint8_t>> _Map;
+        std::vector<std::vector<uint8_t>> _VerticalEdges;
+        std::vector<std::vector<uint8_t>> _HorizontalEdges;
         std::vector<uint8_t> _CurrentPath;
 
         uint8_t _Position[2];
         uint8_t _StartPoint[2];
+
+        std::vector<uint16_t> _DetectionDistance;
         uint8_t _VictimCount = 0;
+        uint16_t _MoveCount = 0;
 
         bool ExtendMap(uint8_t direction);
         void FillMap(uint8_t** map);
@@ -58,4 +52,5 @@ class Robot
         const std::vector<std::vector<uint8_t>>& getMap();
         const uint8_t* getPosition();
         const uint8_t* getStartPoint();
+        const uint16_t getFreeSpace();
 };

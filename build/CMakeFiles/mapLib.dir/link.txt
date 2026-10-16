@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmapLib.a CMakeFiles/mapLib.dir/includes/mapReader.cpp.o CMakeFiles/mapLib.dir/includes/mapGenerator.cpp.o
+/usr/bin/ranlib libmapLib.a

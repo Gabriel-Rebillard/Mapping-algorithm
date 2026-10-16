@@ -11,32 +11,47 @@ Robot::Robot(){
 
     for (uint8_t i = 0; i < 3; i++)
         _Map.push_back(std::vector<uint8_t>(3));
+
+    for (uint8_t i = 0; i < 2; i++){
+        _VerticalEdges.push_back(std::vector<uint8_t>(2));
+        _HorizontalEdges.push_back(std::vector<uint8_t>(2));
+    }
 }
 
 bool Robot::ExtendMap(uint8_t direction){
     switch (direction){
         case UP:
             _Map.insert(_Map.begin(), std::vector<uint8_t>(_Map.at(0).size()));
+            _VerticalEdges.push_back(std::vector<uint8_t>(_VerticalEdges.at(0).size()));
+            _HorizontalEdges.push_back(std::vector<uint8_t>(_HorizontalEdges.at(0).size()));
             _Position [1]++;
             _StartPoint[1]++;
             break;
         
         case RIGHT:
-            for (uint8_t i = 0; i < _Map.size(); i++)
-                _Map.at(i).push_back(ROOM_ID);
-                _Position [0]++;
-                _StartPoint[0]++;
+            for (uint8_t i = 0; i < _Map.size(); i++){
+                _Map.at(i).insert(_Map.at(i).end(), UNKNOWN_ID);
+                _VerticalEdges.at(i).insert(_VerticalEdges.at(i).end(), INFINITY);
+                _HorizontalEdges.at(i).insert(_HorizontalEdges.at(i).end(), INFINITY);
+            }
+            _Position [0]++;
+            _StartPoint[0]++;
             break;
         
         case DOWN:
             _Map.push_back(std::vector<uint8_t>(_Map.at(0).size()));
+            _VerticalEdges.push_back(std::vector<uint8_t>(_VerticalEdges.at(0).size()));
+            _HorizontalEdges.push_back(std::vector<uint8_t>(_HorizontalEdges.at(0).size()));
             _Position [1]--;
             _StartPoint[1]--;
             break;
         
         case LEFT:
-            for (uint8_t i = 0; i < _Map.size(); i++)
-                _Map.at(i).insert(_Map.at(i).begin(), WALL_ID);
+            for (uint8_t i = 0; i < _Map.size(); i++){
+                _Map.at(i).insert(_Map.at(i).begin(), UNKNOWN_ID);
+                _VerticalEdges.at(i).insert(_VerticalEdges.at(i).begin(), INFINITY);
+                _HorizontalEdges.at(i).insert(_HorizontalEdges.at(i).begin(), INFINITY);
+            }
             _Position [0]--;
             _StartPoint[0]--;
             break;
@@ -66,6 +81,8 @@ bool Robot::Move(uint8_t direction){
             _Position[0]--;
             break;
     }
+    
+    _MoveCount++;
     return 1;
 }
 

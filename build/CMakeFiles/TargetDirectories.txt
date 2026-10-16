@@ -1,4 +1,6 @@
-/home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/dataLib.dir
+/home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/mapLib.dir
+/home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/robotLib.dir
+/home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/statisticsLib.dir
 /home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/main.dir
 /home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/edit_cache.dir
 /home/linux/Documents/Cycle ingénieur/3A/S1/Algorithmie/Projet/build/CMakeFiles/rebuild_cache.dir

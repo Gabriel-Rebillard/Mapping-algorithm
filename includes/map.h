@@ -3,8 +3,11 @@
 #include "cfg.h"
 #include "graph.h"
 
+// Converting vertex to case
 #define vToC(v) static_cast<Case *>(v)
 
+
+// Case herits from vertex to be able to store it in a graph
 class Case : public Vertex
 {
 private:
@@ -36,11 +39,11 @@ public:
     Case *GetCase(uint8_t x, uint8_t y);
     Case *GetCase(uint8_t *position);
 
-    bool SetCase(uint8_t x, uint8_t y, uint8_t type);
-    bool SetCase(uint8_t *position, uint8_t type);
+    bool SetCaseType(uint8_t x, uint8_t y, uint8_t type);
+    bool SetCaseType(uint8_t *position, uint8_t type);
 
-    bool addNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight);
-    bool addNeighbour(uint8_t *position1, uint8_t *position2, uint8_t weight);
+    bool AddNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight);
+    bool AddNeighbour(uint8_t *position1, uint8_t *position2, uint8_t weight);
 
     bool RemoveNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
     bool RemoveNeighbour(uint8_t *position1, uint8_t *position2);
@@ -53,6 +56,9 @@ public:
 
     uint8_t GetDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
     uint8_t GetDistance(uint8_t *position1, uint8_t *position2);
+
+    uint8_t GetCaseType(uint8_t x, uint8_t y);
+    uint8_t GetCaseType(uint8_t *position);
 
     uint8_t GetWidth();
     uint8_t GetHeight();

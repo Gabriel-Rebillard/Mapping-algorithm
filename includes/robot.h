@@ -1,22 +1,11 @@
 #pragma once
-#include <vector>
+#include "map.h"
 #include "cfg.h"
-
-
-enum direction
-{
-    UP = 0,
-    RIGHT = 1,
-    DOWN = 2,
-    LEFT = 3
-};
 
 class Robot
 {   
     private:
-        std::vector<std::vector<uint8_t>> _Map;
-        std::vector<std::vector<uint8_t>> _VerticalEdges;
-        std::vector<std::vector<uint8_t>> _HorizontalEdges;
+        Map _Map;
         std::vector<uint8_t> _CurrentPath;
 
         uint8_t _Position[2];
@@ -41,16 +30,15 @@ class Robot
         Robot();
         
 
-        bool GoTo(uint8_t* destination);
-        bool GoTo(uint8_t x, uint8_t y);
+        bool FollowPath();
 
         void AnalyzeEnvironment(uint8_t** map);
 
         uint8_t* ComputeNextDestination();
 
         // Getters
-        const std::vector<std::vector<uint8_t>>& getMap();
-        const uint8_t* getPosition();
-        const uint8_t* getStartPoint();
-        const uint16_t getFreeSpace();
+        const Map* GetMap();
+        const uint8_t* GetPosition();
+        const uint8_t* GetStartPoint();
+        const uint16_t GetFreeSpace();
 };

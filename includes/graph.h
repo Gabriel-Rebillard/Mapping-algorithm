@@ -6,34 +6,27 @@
 #include <algorithm>
 #include <memory>
 
-#ifndef uint8_t
-typedef unsigned char uint8_t;
-#endif
-#ifndef uint16_t
-typedef unsigned short uint16_t;
-#endif
-
 class Vertex
 {
 private:
-    uint8_t _Value;
+    int _Value;
     std::list<Vertex *> _Neighbours;
-    std::map<Vertex *, uint8_t> _Weights;
+    std::map<Vertex *, int> _Weights;
 
 public:
-    Vertex(uint8_t value);
+    Vertex(int value);
     virtual ~Vertex() = default;
 
     std::list<Vertex *> *GetNeighbours();
     bool IsNeighbour(Vertex *neighbour);
-    bool AddNeighbour(Vertex *neighbour, uint8_t weight = 1);
+    bool AddNeighbour(Vertex *neighbour, int weight = 1);
     bool RemoveNeighbour(Vertex *neighbour);
 
-    uint8_t GetEdgeWeight(Vertex *neighbour);
-    bool SetEdgeWeight(Vertex *neighbour, uint8_t weight = 1);
+    int GetEdgeWeight(Vertex *neighbour);
+    bool SetEdgeWeight(Vertex *neighbour, int weight = 1);
 
-    uint8_t GetValue();
-    void SetValue(uint8_t value);
+    int GetValue();
+    void SetValue(int value);
 };
 
 class Graph
@@ -48,30 +41,33 @@ public:
 
     std::vector<std::unique_ptr<Vertex>> *GetGraph();
 
-    void AddVertex(uint8_t value);
+    void AddVertex(int value);
     void AddVertex(std::unique_ptr<Vertex> vertex);
-    void AddVertex(uint8_t position, uint8_t type);
+    void AddVertex(unsigned int position, int value);
 
-    bool AddNeighbour(Vertex *vertex1, Vertex *vertex2, uint8_t weight = 1);
-    bool AddNeighbour(uint8_t position1, uint8_t position2, uint8_t weight = 1);
+    bool AddNeighbour(Vertex *vertex1, Vertex *vertex2, int weight = 1, bool oriented = false);
+    bool AddNeighbour(unsigned int position1, unsigned int position2, int weight = 1, bool oriented = false);
 
     bool RemoveVertex(Vertex *vertex);
-    bool RemoveVertex(uint8_t position);
+    bool RemoveVertex(unsigned int position);
 
     bool RemoveNeighbour(Vertex *vertex1, Vertex *vertex2);
-    bool RemoveNeighbour(uint8_t position1, uint8_t position2);
+    bool RemoveNeighbour(unsigned int position1, unsigned int position2);
 
-    Vertex *GetVertex(uint8_t position);
+    Vertex *GetVertex(unsigned int position);
 
     std::list<Vertex *> *GetNeighbours(Vertex *vertex1);
-    std::list<Vertex *> *GetNeighbours(uint8_t position);
+    std::list<Vertex *> *GetNeighbours(unsigned int position);
 
-    uint8_t GetEdgeWeight(Vertex *vertex1, Vertex *vertex2);
-    uint8_t GetEdgeWeight(uint8_t position1, uint8_t position2);
+    int GetEdgeWeight(Vertex *vertex1, Vertex *vertex2);
+    int GetEdgeWeight(unsigned int position1, unsigned int position2);
 
-    bool SetVertexValue(Vertex *vertex, uint8_t value);
-    bool SetVertexValue(uint8_t position, uint8_t value);
+    int GetVertexValue(Vertex *vertex);
+    int GetVertexValue(unsigned int position);
 
-    bool SetEdgeWeight(Vertex *vertex1, Vertex *vertex2, uint8_t weight);
-    bool SetEdgeWeight(uint8_t position1, uint8_t position2, uint8_t weight);
+    bool SetVertexValue(Vertex *vertex, int value);
+    bool SetVertexValue(unsigned int position, int value);
+
+    bool SetEdgeWeight(Vertex *vertex1, Vertex *vertex2, int weight);
+    bool SetEdgeWeight(unsigned int position1, unsigned int position2, int weight);
 };

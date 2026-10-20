@@ -112,7 +112,7 @@ void DisplayMap(Map* map){
     for (int i = 0; i < h; i++)
         mat[i] = new int[w];
     
-    auto matrix = map->GetMap_Matrixe();
+    auto matrix = map->GetMap_Matrix();
     for (uint8_t i = 0; i < h; i++)
         for (uint8_t j = 0; j < w; j++)
             mat[i][j] = matrix.get()[i * w + j];

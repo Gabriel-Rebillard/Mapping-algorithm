@@ -132,3 +132,67 @@ uint8_t *Robot::GetStartPoint()
 {
     return _StartPoint;
 }
+
+// ============================================================================
+// Exploration : choix de la direction qui découvre le plus de cases
+// (ajouté par Erwan, ne modifie rien au code existant)
+// ============================================================================
+
+// Convertit une direction (UP, RIGHT, DOWN, LEFT) en décalage (dx, dy)
+void Robot::DirectionVector(uint8_t direction, int &dx, int &dy){
+    dx = 0;
+    dy = 0;
+    switch (direction){
+        case UP:    dy = -1; break;
+        case RIGHT: dx =  1; break;
+        case DOWN:  dy =  1; break;
+        case LEFT:  dx = -1; break;
+    }
+}
+
+// Lit une case de _Map sans risque.
+// Hors de la carte = case pas encore vue -> UNKNOWN_ID
+uint8_t Robot::GetCell(int x, int y){
+    if (x < 0 || y < 0 || x >= (int)_Map.GetWidth() || y >= (int)_Map.GetHeight())
+        return UNKNOWN_ID;
+    return _Map.GetCaseType((uint8_t)x, (uint8_t)y);
+}
+
+// Nombre de cases inconnues qu'un pas dans cette direction révélerait
+// -1 si la case voisine est un mur
+int Robot::CountUnknown(uint8_t direction){
+    int dx, dy;
+    DirectionVector(direction, dx, dy);
+    int x = _Position[0];
+    int y = _Position[1];
+
+    if (GetCell(x + dx, y + dy) == WALL_ID)
+        return -1;
+
+    int n = 0;
+    for (int k = -1; k <= 1; k++){
+        int cx = x + 2 * dx + (dx == 0 ? k : 0);
+        int cy = y + 2 * dy + (dy == 0 ? k : 0);
+        if (GetCell(cx, cy) == UNKNOWN_ID)
+            n++;
+    }
+    return n;
+}
+
+// Renvoie la direction qui découvre le plus de cases, ou NO_DIRECTION
+uint8_t Robot::Check(){
+    const uint8_t ordre[4] = { DOWN, RIGHT, UP, LEFT };   // sud, est, nord, ouest
+    uint8_t meilleure = NO_DIRECTION;
+    int max = 0;
+
+    for (uint8_t d : ordre){
+        int n = CountUnknown(d);
+        if (n == 3)
+            return d;
+        if (n > max){
+            max = n;
+            meilleure = d;
+        }
+    }
+    return meilleure;
+}

@@ -76,17 +76,30 @@ bool Robot::Move(uint8_t direction)
 
 void Robot::FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y)
 {
+    if (isFrontier(_Map.GetCaseType(_Position)))
+        _Map.SetCaseType(_Position, _Map.GetCaseType(_Position) & ~FRONTIER_MASK);
+
     for (uint8_t i = 0; i < 3; i++)
         for (uint8_t j = 0; j < 3; j++)
+        {
             if (_Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) == UNKNOWN_ID)
             {
                 _Map.SetCaseType(_Position[0] + i - 1, _Position[1] + j - 1,
                                  map->GetCaseType(start_point_x - _StartPoint[0] + _Position[0] + i - 1,
-                                                  start_point_y - _StartPoint[1] + _Position[1] + i - 1));
+                                                  start_point_y - _StartPoint[1] + _Position[1] + j - 1));
 
                 if (_Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) == VICTIM_ID)
+                {
                     _VictimCount++;
+                    uint8_t *pos = new uint8_t[2];
+                    pos[0] = _Position[0] + i - 1;
+                    pos[1] = _Position[1] + j - 1;
+                    _VictimPositions.push_back(pos);
+                }
+                if (_Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) != WALL_ID)
+                    _Map.SetCaseType(_Position[0] + i - 1, _Position[1] + j - 1, _Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) + FRONTIER_MASK);
             }
+        }
 }
 
 bool Robot::FollowPath()

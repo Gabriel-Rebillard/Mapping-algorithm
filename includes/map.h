@@ -64,5 +64,5 @@ public:
     uint8_t GetCasePositionY(Case *c);
     uint8_t *GetCasePosition(Case *c);
 
-    std::unique_ptr<uint8_t[]> GetMap_Matrixe();
+    std::unique_ptr<uint8_t[]> GetMap_Matrix();
 };

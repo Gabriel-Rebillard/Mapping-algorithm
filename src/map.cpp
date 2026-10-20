@@ -56,15 +56,6 @@ void Map::ExtendMap(uint8_t dir)
     }
 }
 
-uint8_t Map::GetValue(uint8_t x, uint8_t y)
-{
-    return _Graph.GetVertexValue(y * _Width + x);
-}
-uint8_t Map::GetValue(uint8_t *position)
-{
-    return GetValue(position[0], position[1]);
-}
-
 Case *Map::GetCase(uint8_t x, uint8_t y)
 {
     return vToC(_Graph.GetVertex(y * _Width + x));

@@ -66,6 +66,8 @@ void DisplayMap(int** map, uint8_t width, uint8_t height)
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++){
+            if (isFrontier(map[i][j]))
+                symbol = FRONTIER_SYMBOL;
             switch (map[i][j])
             {
                 case WALL_ID:
@@ -74,10 +76,6 @@ void DisplayMap(int** map, uint8_t width, uint8_t height)
                 
                 case UNKNOWN_ID:
                     symbol = UNKNOWN_SYMBOL;
-                    break;
-                
-                case FRONTIER_ID:
-                    symbol = FRONTIER_SYMBOL;
                     break;
 
                 case VICTIM_ID:
@@ -124,6 +122,18 @@ void DisplayMap(Map* map){
     for (int i = 0; i < h; i++)
         delete[] mat[i];
     delete[] mat;
+}
+
+uint8_t* findStart(Map* map, uint8_t robot){
+    uint8_t* start = new uint8_t[2];
+    for (uint8_t i = 0; i < map->GetHeight(); i++)
+        for (uint8_t j = 0; j < map->GetWidth(); j++)
+            if (map->GetCaseType(j, i) == ROBOT_BASE_ID + robot)
+            {
+                start[0] = j;
+                start[1] = i;
+                return start;
+            }
 }
 
 void CloseFile(std::ifstream& file)

@@ -59,7 +59,7 @@ bool Graph::AddNeighbour(unsigned int position1, unsigned int position2, int wei
 {
     if (position1 >= _Graph.size() || position2 >= _Graph.size())
         return 0;
-    AddNeighbour(_Graph.at(position1).get(), _Graph.at(position2).get(), weight);
+    AddNeighbour(_Graph.at(position1).get(), _Graph.at(position2).get(), weight, oriented);
     return 1;
 }
 
@@ -131,13 +131,13 @@ int Graph::GetEdgeWeight(unsigned int position1, unsigned int position2)
 int Graph::GetVertexValue(Vertex *vertex)
 {
     if (!IsVertexInGraph(vertex))
-        return 0;
+        return NULL;
     return vertex->GetValue();
 }
 int Graph::GetVertexValue(unsigned int position)
 {
     if (position >= _Graph.size())
-        return 0;
+        return NULL;
     return GetVertexValue(_Graph.at(position).get());
 }
 

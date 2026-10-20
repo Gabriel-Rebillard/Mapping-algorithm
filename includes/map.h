@@ -33,9 +33,6 @@ public:
 
     void ExtendMap(uint8_t dir);
 
-    uint8_t GetValue(uint8_t x, uint8_t y);
-    uint8_t GetValue(uint8_t *position);
-
     Case *GetCase(uint8_t x, uint8_t y);
     Case *GetCase(uint8_t *position);
 

@@ -1,13 +1,15 @@
 #define INFINITY 0xff
-#define NaN INFINITY-1
+#define NaN (INFINITY-1)
 #define UNKNOWN_ID NaN
 #define WALL_ID 0
 #define ROOM_ID 10
-#define FRONTIER_ID 1
+#define FRONTIER_MASK 0x80
 #define VICTIM_ID 2
 #define ROBOT_ID 4
 #define ROBOT_BASE_ID 5
 #define PORTAL_ID 7
+
+#define isFrontier(ID) ID & FRONTIER_MASK == FRONTIER_MASK
 
 #define WALL_SYMBOL "⬜"
 #define ROOM_SYMBOL "🟩"

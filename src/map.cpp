@@ -176,7 +176,7 @@ uint8_t *Map::GetCasePosition(Case *c)
     return position;
 }
 
-std::unique_ptr<uint8_t[]> Map::GetMap_Matrixe()
+std::unique_ptr<uint8_t[]> Map::GetMap_Matrix()
 {
     auto matrix = std::make_unique<uint8_t[]>(_Height * _Width);
 

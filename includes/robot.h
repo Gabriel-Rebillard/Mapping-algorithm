@@ -23,6 +23,12 @@ private:
     
     uint16_t FindNearestFrontier();
     uint16_t FindNextFrontier();
+
+    // --- Ajout Erwan : exploration -------------------------------------------
+    void    DirectionVector(uint8_t direction, int &dx, int &dy);
+    uint8_t GetCell(int x, int y);
+    int     CountUnknown(uint8_t direction);
+    // -------------------------------------------------------------------------
     
     public:
     Robot();
@@ -35,6 +41,10 @@ private:
     void AnalyzeEnvironment(Map *map, uint8_t *start_point);
 
     uint8_t *ComputeNextDestination();
+    // --- Ajout Erwan : exploration -------------------------------------------
+    static const uint8_t NO_DIRECTION = 0xFF;   // aucune direction utile
+    uint8_t Check();                            // direction qui découvre le plus de cases
+    // -------------------------------------------------------------------------
 
     // Getters
     Map *GetMap();

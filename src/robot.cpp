@@ -43,6 +43,34 @@ void Robot::ExtendMap(uint8_t direction)
     }
 }
 
+void Robot::OptimizeFrontier()
+{
+    uint8_t h = _Map.GetHeight() - 1;
+    uint8_t w = _Map.GetWidth() - 1;
+    uint8_t adjUnknownCount;
+    for (uint8_t i = 1; i < w; i++)
+    {
+        for (uint8_t j = 1; j < h; j++)
+        {
+            adjUnknownCount = 0;
+            if (isFrontier(_Map.GetCaseType(i, j)))
+            {
+                if (_Map.GetCaseType(i - 1, j) == UNKNOWN_ID)
+                    adjUnknownCount++;
+                if (_Map.GetCaseType(i + 1, j) == UNKNOWN_ID)
+                    adjUnknownCount++;
+                if (_Map.GetCaseType(i, j - 1) == UNKNOWN_ID)
+                    adjUnknownCount++;
+                if (_Map.GetCaseType(i, j + 1) == UNKNOWN_ID)
+                    adjUnknownCount++;
+
+                if (adjUnknownCount == 0)
+                    _Map.SetCaseType(i, j, removeFrontier(_Map.GetCaseType(i, j)));
+            }
+        }
+    }
+}
+
 bool Robot::Move(uint8_t direction)
 {
     switch (direction)
@@ -77,7 +105,7 @@ bool Robot::Move(uint8_t direction)
 void Robot::FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y)
 {
     if (isFrontier(_Map.GetCaseType(_Position)))
-        _Map.SetCaseType(_Position, _Map.GetCaseType(_Position) & ~FRONTIER_MASK);
+        _Map.SetCaseType(_Position, removeFrontier(_Map.GetCaseType(_Position)));
 
     for (uint8_t i = 0; i < 3; i++)
         for (uint8_t j = 0; j < 3; j++)
@@ -97,7 +125,7 @@ void Robot::FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y)
                     _VictimPositions.push_back(pos);
                 }
                 if (_Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) != WALL_ID)
-                    _Map.SetCaseType(_Position[0] + i - 1, _Position[1] + j - 1, _Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1) + FRONTIER_MASK);
+                    _Map.SetCaseType(_Position[0] + i - 1, _Position[1] + j - 1, addFrontier(_Map.GetCaseType(_Position[0] + i - 1, _Position[1] + j - 1)));
             }
         }
 }
@@ -124,6 +152,7 @@ void Robot::AnalyzeEnvironment(Map *map, uint8_t start_point_x, uint8_t start_po
         ExtendMap(DOWN);
 
     FillMap(map, start_point_x, start_point_y);
+    OptimizeFrontier();
 }
 
 void Robot::AnalyzeEnvironment(Map *map, uint8_t *start_point)

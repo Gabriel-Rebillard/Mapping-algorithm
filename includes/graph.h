@@ -53,36 +53,36 @@ public:
     std::vector<std::unique_ptr<Vertex>> *GetGraph();
 
     // Vertex manipulation interface
-    void AddVertex(int value = 0); // Adds a vertex to the graph
-    void AddVertex(Vertex vertex);
-    void AddVertex(unsigned int position, int value);
+    void AddVertex(int value = 0);                                                                            // Adds a vertex to the graph                                                           
+    void AddVertex(Vertex vertex);                                                                           
+    void AddVertex(unsigned int position, int value);                                                        
 
-    bool RemoveVertex(Vertex *vertex); // Removes a vertex from the graph, returns false if the vertex does not exist
-    bool RemoveVertex(unsigned int position);
+    bool RemoveVertex(Vertex *vertex);                                                                        // Removes a vertex from the graph, returns false if the vertex does not exist          
+    bool RemoveVertex(unsigned int position);                                                                
 
-    Vertex *GetVertex(unsigned int position) const; // Returns the vertex at the given position, return nullptr if the vertex does not exist
-    int GetVertexValue(Vertex *vertex) const;       // Returns the value of the vertex, return NULL if the vertex does not exist
-    int GetVertexValue(unsigned int position) const;
+    Vertex *GetVertex(unsigned int position) const;                                                           // Returns the vertex at the given position, return nullptr if the vertex does not exist
+    int GetVertexValue(Vertex *vertex) const;                                                                 // Returns the value of the vertex, return NULL if the vertex does not exist            
+    int GetVertexValue(unsigned int position) const;                                                         
 
-    bool SetVertexValue(Vertex *vertex, int value); // Sets the value of the given vertex
-    bool SetVertexValue(unsigned int position, int value);
+    bool SetVertexValue(Vertex *vertex, int value);                                                           // Sets the value of the given vertex                                                   
+    bool SetVertexValue(unsigned int position, int value);                                                   
 
-    bool IsVertexInGraph(Vertex *vertex) const; // Returns true if the vertex is in the graph
+    bool IsVertexInGraph(Vertex *vertex) const;                                                               // Returns true if the vertex is in the graph                                           
 
-    // Neighbouroud manipulation interface
-    bool AddNeighbour(Vertex *vertex1, Vertex *vertex2, int weight = 1, bool oriented = false); // Links two vertices with an edge, optionally weighted and/or oriented
+    // Neighbouroud manipulation interface                                                  
+    bool AddNeighbour(Vertex *vertex1, Vertex *vertex2, int weight = 1, bool oriented = false);               // Links two vertices with an edge, optionally weighted and/or oriented                 
     bool AddNeighbour(unsigned int position1, unsigned int position2, int weight = 1, bool oriented = false);
 
-    bool RemoveNeighbour(Vertex *vertex1, Vertex *vertex2); // Unlinks two vertices
-    bool RemoveNeighbour(unsigned int position1, unsigned int position2);
+    bool RemoveNeighbour(Vertex *vertex1, Vertex *vertex2);                                                   // Unlinks two vertices                                                                 
+    bool RemoveNeighbour(unsigned int position1, unsigned int position2);                                    
 
-    const std::list<const Vertex *> *GetNeighbours(Vertex *vertex1) const; // Returns the list of neighbours of the given vertex
-    const std::list<const Vertex *> *GetNeighbours(unsigned int position) const;
+    const std::list<const Vertex *> *GetNeighbours(Vertex *vertex1) const;                                    // Returns the list of neighbours of the given vertex                                   
+    const std::list<const Vertex *> *GetNeighbours(unsigned int position) const;                             
 
-    // Edge manipulation interface
-    int GetEdgeWeight(Vertex *vertex1, Vertex *vertex2) const; // Returns the weight of the edge connecting the two vertices
-    int GetEdgeWeight(unsigned int position1, unsigned int position2) const;
+    // Edge manipulation interface                                                          
+    int GetEdgeWeight(Vertex *vertex1, Vertex *vertex2) const;                                                // Returns the weight of the edge connecting the two vertices                           
+    int GetEdgeWeight(unsigned int position1, unsigned int position2) const;                                 
 
-    bool SetEdgeWeight(Vertex *vertex1, Vertex *vertex2, int weight); // Sets the weight of the edge connecting the two vertices
+    bool SetEdgeWeight(Vertex *vertex1, Vertex *vertex2, int weight);                                         // Sets the weight of the edge connecting the two vertices                              
     bool SetEdgeWeight(unsigned int position1, unsigned int position2, int weight);
 };

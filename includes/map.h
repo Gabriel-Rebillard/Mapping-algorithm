@@ -3,9 +3,6 @@
 #include "cfg.h"
 #include "graph.h"
 
-// Converting vertex to case
-#define vToC(v) static_cast<Case *>(v)
-
 
 // Case herits from vertex to be able to store it in a graph
 class Case : public Vertex
@@ -24,6 +21,9 @@ private:
     Graph _Graph;
     uint8_t _Width;
     uint8_t _Height;
+
+    const Case* vToC(const Vertex *v) const { return static_cast<const Case *>(v); }
+    Case* vToC(Vertex *v) { return static_cast<Case *>(v); }
 
 public:
     Map(uint8_t width, uint8_t height);         // Constructeur
@@ -61,8 +61,8 @@ public:
     bool RemoveNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);                // Supprime un passage entre deux cases                   
     bool RemoveNeighbour(uint8_t *position1, uint8_t *position2);                       
 
-    std::unique_ptr<std::list<Case *>> GetNeighbours(uint8_t x, uint8_t y);              // Renvoie la liste des cases adjacentes/reliées a la case
-    std::unique_ptr<std::list<Case *>> GetNeighbours(uint8_t *position);                
+    const std::unique_ptr<std::list<const Case *>> GetNeighbours(uint8_t x, uint8_t y);              // Renvoie la liste des cases adjacentes/reliées a la case
+    const std::unique_ptr<std::list<const Case *>> GetNeighbours(uint8_t *position);                
                                                                                         
     bool ModifyDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight); // Modifie la distance entre deux cases                   
     bool ModifyDistance(uint8_t *position1, uint8_t *position2, uint8_t weight);        

@@ -7,21 +7,16 @@
 #include "cfg.h"
 #include "map.h"
 
-std::ifstream OpenFile(std::string path);
-
-uint8_t* GetSize(std::ifstream& file);
-
-uint8_t** CreateMat(uint8_t n, uint8_t m);
 
 void GetMap(std::ifstream& file , uint8_t** map, uint8_t n, uint8_t m);
 
+// Affiche la carte donnée sous forme de matrice d'uint8_t (type de case seulement)
 void DisplayMap(uint8_t** map, uint8_t n, uint8_t m);
+// converti une carte sous forme de graphe en matrice d'uint8_t
 void DisplayMap(Map* map);
 
+// Cherche la position de la base du robot dans la carte
 uint8_t* findStart(Map* map, uint8_t robot=0);
 
-void CloseFile(std::ifstream& file);
-
-void DeleteMap(uint8_t** mat, uint8_t n);
-
+// Efface le terminal
 void ClearConsole();

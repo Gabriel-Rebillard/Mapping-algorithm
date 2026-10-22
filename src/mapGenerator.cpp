@@ -6,7 +6,9 @@ std::unique_ptr<Map> generateMap(uint8_t width, uint8_t height)
 
     // Walls generation
     generateBorderWalls(map.get());
+    generateBitMap(map.get());
     generateWalls(map.get());
+    generateEmptyRoom(map.get());
 
     // Vicitms generation
     generateVictims(map.get());
@@ -19,6 +21,7 @@ std::unique_ptr<Map> generateMap(uint8_t width, uint8_t height)
     generateHorizontalEdges(map.get());
 
     generatePortals(map.get());
+
 
     return map;
 }
@@ -42,11 +45,84 @@ void generateBorderWalls(Map *map)
         map->SetCaseType(i, h - 1, WALL_ID);
     }
 }
+void generateBitMap(Map *map)
+{
+    std::ifstream file("./../data/bitMaps.txt");
+
+    std::vector<std::array<uint8_t, 4>> protectedArea;
+    bool canGenerate = false;
+    uint8_t bitMapNumber = 0;
+    uint8_t *size;
+    bool **bitMap;
+
+    std::string str;
+    std::getline(file, str);
+
+    uint8_t x, y;
+
+    while (str[0] == '*')
+    {
+        size = GetSize(file);
+
+        if (size[0] > map->GetWidth() - 2 || size[1] > map->GetHeight() - 2)
+            return;
+        bitMap = CreateNullBitMap(size[0], size[1]);
+        ReadBitMap(file, bitMap, size[0], size[1]);
+
+        canGenerate = false;
+
+        // Generate first bitMap randomly in the map
+        if (bitMapNumber == 0)
+        {
+            canGenerate = 1;
+            x = (rand() % (map->GetWidth() - 1 - size[0])) + 1;
+            y = (rand() % (map->GetHeight() - 1 - size[1])) + 1;
+        }
+
+        // Generate other bitMap randomly in the map, but not on other bitmaps
+        else
+        {
+            for (uint8_t i = 0; i < 100; i++)
+            {
+                x = (rand() % (map->GetWidth() - 1 - size[0])) + 1;
+                y = (rand() % (map->GetHeight() - 1 - size[1])) + 1;
+
+                canGenerate = true;
+                for (uint8_t j = 0; j < bitMapNumber; j++){
+                    if ((x + size[0] >= protectedArea.at(j).at(0) && x <= protectedArea.at(j).at(1)) && (y + size[1] >= protectedArea.at(j).at(2) && y <= protectedArea.at(j).at(3)))
+                    {
+                        canGenerate = false;
+                        break;
+                    }
+                }
+
+                if (canGenerate)
+                    break;
+            }
+        }
+
+        if (canGenerate)
+        {
+            for (uint8_t i = x; i < x + size[0]; i++)
+                for (uint8_t j = y; j < y + size[1]; j++)
+                    map->SetCaseType(i, j, bitMap[j - y][i - x] == 1 ? ROOM_ID : WALL_ID);
+
+            std::array<uint8_t, 4> zone = {x, x + size[0], y, y + size[1]};
+            protectedArea.push_back(zone);
+            bitMapNumber++;
+        }
+        DeleteBitMap(bitMap, size[1]);
+
+        std::getline(file, str);
+    }
+
+    file.close();
+}
 void generateWalls(Map *map)
 {
     // Generate walls next to other walls by spiral generation
-    uint8_t h = map->GetHeight() - 2;
-    uint8_t w = map->GetWidth() - 2;
+    uint8_t h = map->GetHeight() - 1;
+    uint8_t w = map->GetWidth() - 1;
 
     float probability = GENERATOR_WALL_PROBABILITY;
 
@@ -89,8 +165,8 @@ void generateVictims(Map *map)
     {
         do
         {
-            x = rand() % (map->GetWidth() - 2) + 1;
-            y = rand() % (map->GetHeight() - 2) + 1;
+            x = rand() % (map->GetWidth() - 1) + 1;
+            y = rand() % (map->GetHeight() - 1) + 1;
         } while (map->GetCaseType(x, y) == WALL_ID || map->GetCaseType(x, y) == VICTIM_ID);
         map->SetCaseType(x, y, VICTIM_ID);
     }
@@ -102,8 +178,8 @@ void generateRobots(Map *map)
     {
         do
         {
-            x = rand() % (map->GetWidth() - 2) + 1;
-            y = rand() % (map->GetHeight() - 2) + 1;
+            x = rand() % (map->GetWidth() - 1) + 1;
+            y = rand() % (map->GetHeight() - 1) + 1;
         } while (map->GetCaseType(x, y) == WALL_ID || map->GetCaseType(x, y) == VICTIM_ID || map->GetCaseType(x, y) == ROBOT_BASE_ID);
         map->SetCaseType(x, y, ROBOT_BASE_ID);
     }
@@ -120,14 +196,24 @@ void generatePortals(Map *map)
 
             do
             {
-                x1 = rand() % (map->GetWidth() - 2) + 1;
-                y1 = rand() % (map->GetHeight() - 2) + 1;
+                x1 = rand() % (map->GetWidth() - 1) + 1;
+                y1 = rand() % (map->GetHeight() - 1) + 1;
             } while (map->GetCaseType(x1, y1) == WALL_ID || map->GetCaseType(x1, y1) == VICTIM_ID || map->GetCaseType(x1, y1) == ROBOT_BASE_ID);
             map->SetCaseType(x1, y1, PORTAL_ID);
         }
 
         map->AddNeighbour(x1, y1, x2, y2, 1);
     }
+}
+void generateEmptyRoom(Map *map)
+{
+    uint8_t w = map->GetWidth() - 1;
+    uint8_t h = map->GetHeight() - 1;
+
+    for (uint8_t i = 1; i < w; i++)
+        for (uint8_t j = 1; j < h; j++)
+            if (map->GetCaseType(i, j) == UNKNOWN_ID)
+                map->SetCaseType(i, j, ROOM_ID);
 }
 
 void generateVerticalEdges(Map *map, bool random_weights, uint8_t min_random_weight, uint8_t max_random_weight)
@@ -166,6 +252,9 @@ void generateHorizontalEdges(Map *map, bool random_weights, uint8_t min_random_w
 bool testWallGeneration(Map *map, uint8_t x, uint8_t y)
 {
     if (x == 0 || y == 0 || x == map->GetWidth() - 1 || y == map->GetHeight() - 1)
+        return 0;
+
+    if (map->GetCaseType(x, y) != UNKNOWN_ID)
         return 0;
 
     uint8_t adjacentWalls = 0;

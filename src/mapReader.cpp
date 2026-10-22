@@ -1,10 +1,5 @@
 #include "../includes/mapReader.h"
 
-std::ifstream OpenFile(std::string path)
-{
-    std::ifstream file(path);
-    return file;
-}
 
 uint8_t *GetSize(std::ifstream &file)
 {
@@ -27,21 +22,25 @@ uint8_t *GetSize(std::ifstream &file)
 
     return size;
 }
-
-uint8_t **CreateMat(uint8_t width, uint8_t height)
+bool **CreateNullBitMap(uint8_t width, uint8_t height)
 {
-    uint8_t **mat = new uint8_t *[height];
+    bool **mat = new bool *[height];
     for (int i = 0; i < height; i++)
-        mat[i] = new uint8_t[width];
+        mat[i] = new bool[width];
 
     for (int i = 0; i < height; i++)
         for (int j = 0; j < width; j++)
-            mat[i][j] = -1;
+            mat[i][j] = 0;
 
     return mat;
 }
-
-void GetMap(std::ifstream &file, uint8_t **map, uint8_t width, uint8_t height)
+void DeleteBitMap(bool **mat, uint8_t height)
+{
+    for (int i = 0; i < height; i++)
+        delete[] mat[i];
+    delete[] mat;
+}
+void ReadBitMap(std::ifstream &file, bool **map, uint8_t width, uint8_t height)
 {
     std::string line;
 
@@ -57,9 +56,10 @@ void GetMap(std::ifstream &file, uint8_t **map, uint8_t width, uint8_t height)
         std::cout << "Ligne " << i + 2 << " : " << line << std::endl;
 
         for (int j = 0; j < width; j++)
-            map[i][j] = line[j] - '0';
+            map[i][j] = (line[j] == '0');
     }
 }
+
 
 void DisplayMap(int **map, uint8_t width, uint8_t height)
 {
@@ -147,12 +147,7 @@ void CloseFile(std::ifstream &file)
     file.close();
 }
 
-void DeleteMap(uint8_t **mat, uint8_t height)
-{
-    for (int i = 0; i < height; i++)
-        delete[] mat[i];
-    delete[] mat;
-}
+
 
 void ClearConsole()
 {

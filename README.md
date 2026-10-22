@@ -26,6 +26,6 @@ Random map generation, supporting random wall placements, bitmap pattern, random
 NB : surround the bitmap with 0 to not interfere with wall generation
 
 #### To run the programm :
-Command : ./main <width> <height> [seed]
+Command : ./main \<width> \<height> [seed]
 
 seed : number used for pseudo-random generation : same seed = same generation

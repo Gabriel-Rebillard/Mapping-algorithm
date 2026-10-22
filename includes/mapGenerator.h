@@ -3,9 +3,12 @@
 #include "cfg.h"
 #include <random>
 #include "map.h"
+#include "mapReader.h"
+#include <array>
 
 // Get the 'n'th bit of 'var', used for testing walls generation
 #define bit(var, n) (var >> n) & 1
+
 
 // Map generation
 std::unique_ptr<Map> generateMap(uint8_t width, uint8_t height); 
@@ -18,8 +21,9 @@ void generateWalls(Map* map);       // Genere les murs internes et pilliers
 void generateVictims(Map* map);     // Genere les victimes                                         
 void generateRobots(Map* map);      // Genere les robots                                           
 void generatePortals(Map* map);     // Genere les portails (pas encore utilisé)                    
+void generateEmptyRoom(Map *map);
 
-                                    // Genere les passages avec distance entre les cases accesibles
+// Genere les passages avec distance entre les cases accesibles
 void generateVerticalEdges(Map* map, bool random_weights=false, uint8_t min_random_weight=1, uint8_t max_random_weight=1);
 void generateHorizontalEdges(Map* map, bool random_weights=false, uint8_t min_random_weight=1, uint8_t max_random_weight=1);
 

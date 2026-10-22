@@ -21,7 +21,7 @@ Random map generation, supporting random wall placements, bitmap pattern, random
         0000
         "
 
-        **/!\ WRITE AN EMPTY LINE AT THE END OF THE FILE**
+**/!\ WRITE AN EMPTY LINE AT THE END OF THE FILE**
 
 NB : surround the bitmap with 0 to not interfere with wall generation
 

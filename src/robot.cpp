@@ -78,7 +78,7 @@ void Robot::OptimizeFrontier()
     std::advance(frontierIte, w);
 
     auto endIte = mapGraph->begin();
-    std::advance(endIte, w*(_Map.GetHeight() - 1));
+    std::advance(endIte, w * (_Map.GetHeight() - 1));
 
     while (frontierIte < endIte)
     {
@@ -94,17 +94,13 @@ void Robot::OptimizeFrontier()
             {
 
                 adjUnknownCount = 0;
-                if (_Map.GetCaseType(pos[0] - 1, pos[1]) == UNKNOWN_ID 
-                    || (isFrontier(_Map.GetCaseType(pos[0] - 1, pos[1])) && _Map.GetDistance(pos[0] - 1, pos[1], pos[0], pos[1]) == INFINITY))
+                if (_Map.GetCaseType(pos[0] - 1, pos[1]) == UNKNOWN_ID || (isFrontier(_Map.GetCaseType(pos[0] - 1, pos[1])) && _Map.GetDistance(pos[0] - 1, pos[1], pos[0], pos[1]) == INFINITY))
                     adjUnknownCount++;
-                if (_Map.GetCaseType(pos[0] + 1, pos[1]) == UNKNOWN_ID 
-                    || (isFrontier(_Map.GetCaseType(pos[0] + 1, pos[1])) && _Map.GetDistance(pos[0] + 1, pos[1], pos[0], pos[1]) == INFINITY))
+                if (_Map.GetCaseType(pos[0] + 1, pos[1]) == UNKNOWN_ID || (isFrontier(_Map.GetCaseType(pos[0] + 1, pos[1])) && _Map.GetDistance(pos[0] + 1, pos[1], pos[0], pos[1]) == INFINITY))
                     adjUnknownCount++;
-                if (_Map.GetCaseType(pos[0], pos[1] - 1) == UNKNOWN_ID 
-                    || (isFrontier(_Map.GetCaseType(pos[0], pos[1] - 1)) && _Map.GetDistance(pos[0], pos[1] - 1, pos[0], pos[1]) == INFINITY))
+                if (_Map.GetCaseType(pos[0], pos[1] - 1) == UNKNOWN_ID || (isFrontier(_Map.GetCaseType(pos[0], pos[1] - 1)) && _Map.GetDistance(pos[0], pos[1] - 1, pos[0], pos[1]) == INFINITY))
                     adjUnknownCount++;
-                if (_Map.GetCaseType(pos[0], pos[1] + 1) == UNKNOWN_ID 
-                    || (isFrontier(_Map.GetCaseType(pos[0], pos[1] + 1)) && _Map.GetDistance(pos[0], pos[1] + 1, pos[0], pos[1]) == INFINITY))
+                if (_Map.GetCaseType(pos[0], pos[1] + 1) == UNKNOWN_ID || (isFrontier(_Map.GetCaseType(pos[0], pos[1] + 1)) && _Map.GetDistance(pos[0], pos[1] + 1, pos[0], pos[1]) == INFINITY))
                     adjUnknownCount++;
 
                 if (adjUnknownCount == 0)
@@ -175,24 +171,31 @@ void Robot::FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y)
             }
         }
 
-    // Edge filling
+    // Horizontal Edge filling
     uint8_t xc, yc;
     for (uint8_t i = 0; i < 2; i++)
-        for (uint8_t j = 0; j < 2; j++)
+        for (uint8_t j = 0; j < 3; j++)
         {
             xc = _Position[0] + i - 1;
             yc = _Position[1] + j - 1;
             if (_Map.GetDistance(xc, yc, xc + 1, yc) == INFINITY)
                 _Map.AddNeighbour(xc, yc, xc + 1, yc, map->GetDistance(start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc, start_point_x - _StartPoint[0] + xc + 1, start_point_y - _StartPoint[1] + yc));
 
-            if (_Map.GetDistance(xc, yc, xc, yc + 1) == INFINITY)
-                _Map.AddNeighbour(xc, yc, xc, yc + 1, map->GetDistance(start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc, start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc + 1));
-
             if (_Map.GetDistance(xc, yc, xc + 1, yc) != map->GetDistance(start_point_x - _StartPoint[0] + xc,
                                                                          start_point_y - _StartPoint[1] + yc,
                                                                          start_point_x - _StartPoint[0] + xc + 1,
                                                                          start_point_y - _StartPoint[1] + yc))
                 _Map.ModifyDistance(xc, yc, xc + 1, yc, map->GetDistance(start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc, start_point_x - _StartPoint[0] + xc + 1, start_point_y - _StartPoint[1] + yc));
+        }
+
+    // Vertical Edge filling
+    for (uint8_t i = 0; i < 3; i++)
+        for (uint8_t j = 0; j < 2; j++)
+        {
+            xc = _Position[0] + i - 1;
+            yc = _Position[1] + j - 1;
+            if (_Map.GetDistance(xc, yc, xc, yc + 1) == INFINITY)
+                _Map.AddNeighbour(xc, yc, xc, yc + 1, map->GetDistance(start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc, start_point_x - _StartPoint[0] + xc, start_point_y - _StartPoint[1] + yc + 1));
 
             if (_Map.GetDistance(xc, yc, xc, yc + 1) != map->GetDistance(start_point_x - _StartPoint[0] + xc,
                                                                          start_point_y - _StartPoint[1] + yc,

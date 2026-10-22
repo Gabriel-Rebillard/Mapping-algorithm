@@ -37,6 +37,12 @@ private:
     // Cherche la prochaine frontiere à explorer et renvoi sa position
     uint8_t* FindNextFrontier();
 
+    // --- Ajout Erwan : exploration -------------------------------------------
+    void    DirectionVector(uint8_t direction, int &dx, int &dy);
+    uint8_t GetCell(int x, int y);
+    int     CountUnknown(uint8_t direction);
+    // -------------------------------------------------------------------------
+
 public:
     Robot();
 
@@ -69,4 +75,9 @@ public:
 
     // Renvoi un pointeur vers le point de depart du robot
     uint8_t *GetStartPoint();
+
+    // --- Ajout Erwan : exploration -------------------------------------------
+    static const uint8_t NO_DIRECTION = 0xFF;   // aucune direction utile
+    uint8_t Check();                            // direction qui découvre le plus de cases
+    // -------------------------------------------------------------------------
 };

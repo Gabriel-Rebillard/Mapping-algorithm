@@ -227,7 +227,7 @@ bool Robot::ClosedRoom(Map *map)
             {
                 for (int x = i; x < map->GetHeight(); x++)
                 {
-                    if (map->GetCaseType(x,j) == 10)
+                    if (map->GetCaseType(x,j) == WALL_ID)
                     {
                         sides++;
                         break;
@@ -235,7 +235,7 @@ bool Robot::ClosedRoom(Map *map)
                 }
                 for (int x = i; x > 0; x--)
                 {
-                    if (map->GetCaseType(x,j) == 10)
+                    if (map->GetCaseType(x,j) == WALL_ID)
                     {
                         sides++;
                         break;
@@ -243,7 +243,7 @@ bool Robot::ClosedRoom(Map *map)
                 }
                 for (int y = j; y < map->GetWidth(); y++)
                 {
-                    if (map->GetCaseType(i,y) == 10)
+                    if (map->GetCaseType(i,y) == WALL_ID)
                     {
                         sides++;
                         break;
@@ -251,7 +251,7 @@ bool Robot::ClosedRoom(Map *map)
                 }
                 for (int y = j; y < map->GetWidth(); y++)
                 {
-                    if (map->GetCaseType(i,y) == 10)
+                    if (map->GetCaseType(i,y) == WALL_ID)
                     {
                         sides++;
                         break;

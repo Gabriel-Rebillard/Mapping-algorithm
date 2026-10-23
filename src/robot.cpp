@@ -215,6 +215,59 @@ bool Robot::FollowPath()
     return 0;
 }
 
+bool Robot::ClosedRoom(Map *map)
+{
+    bool isclosed = false;
+    int sides = 0;
+    for (int i = 0; i < map->GetHeight(); i++)
+    {
+        for (int j = 0; j < map->GetWidth(); j++)
+        {
+            sides = 0;
+            if (map->GetCaseType(i,j) == NaN)
+            {
+                for (int x = i; x < map->GetHeight(); x++)
+                {
+                    if (map->GetCaseType(x,j) == 10)
+                    {
+                        sides++;
+                        break;
+                    }
+                }
+                for (int x = i; x > 0; x--)
+                {
+                    if (map->GetCaseType(x,j) == 10)
+                    {
+                        sides++;
+                        break;
+                    }
+                }
+                for (int y = j; y < map->GetWidth(); y++)
+                {
+                    if (map->GetCaseType(i,y) == 10)
+                    {
+                        sides++;
+                        break;
+                    }
+                }
+                for (int y = j; y < map->GetWidth(); y++)
+                {
+                    if (map->GetCaseType(i,y) == 10)
+                    {
+                        sides++;
+                        break;
+                    }
+                }
+            }
+            if (sides == 4)
+            {
+                isclosed = true;
+            }
+        }
+    }
+    return isclosed;
+}
+
 void Robot::AnalyzeEnvironment(Map *map, uint8_t start_point_x, uint8_t start_point_y)
 {
     if (_Position[0] == 0)

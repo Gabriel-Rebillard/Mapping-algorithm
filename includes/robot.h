@@ -60,6 +60,10 @@ public:
         - Remplit la carte
         - Optimise les frontieres
     */
+
+    // Renvoi true si la map contient une piece fermée
+    bool ClosedRoom(Map *map);
+
     void AnalyzeEnvironment(Map *map, uint8_t start_point_x, uint8_t start_point_y);
     void AnalyzeEnvironment(Map *map, uint8_t *start_point);
 

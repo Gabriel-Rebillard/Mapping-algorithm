@@ -217,14 +217,13 @@ bool Robot::FollowPath()
 
 bool Robot::ClosedRoom(Map *map)
 {
-    bool isclosed = false;
     int sides = 0;
     for (int i = 0; i < map->GetHeight(); i++)
     {
         for (int j = 0; j < map->GetWidth(); j++)
         {
             sides = 0;
-            if (map->GetCaseType(i,j) == NaN)
+            if (map->GetCaseType(i,j) == UNKNOWN_ID)
             {
                 for (int x = i; x < map->GetHeight(); x++)
                 {
@@ -261,11 +260,11 @@ bool Robot::ClosedRoom(Map *map)
             }
             if (sides == 4)
             {
-                isclosed = true;
+                return true;
             }
         }
     }
-    return isclosed;
+    return false;
 }
 
 void Robot::AnalyzeEnvironment(Map *map, uint8_t start_point_x, uint8_t start_point_y)

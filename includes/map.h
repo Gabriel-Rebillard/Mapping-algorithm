@@ -9,10 +9,14 @@ class Case : public Vertex
 {
 private:
     uint8_t _VisitedCount = 0;  // Nombre de passages sur la cases
+    bool _Enclosed = false;
 
 public:
     Case(uint8_t type = NaN);
     uint8_t GetVisitedCount();  // Retourne le nombre de fois que la case a été visite
+
+    bool GetEnclosed();
+    void SetEnclosed(bool state);
 };
 
 class Map
@@ -53,6 +57,14 @@ public:
     bool SetCaseType(uint8_t x, uint8_t y, uint8_t type); // Modifie le type de la case
     bool SetCaseType(uint8_t *position, uint8_t type);
 
+    bool GetEnclosedState(uint8_t x, uint8_t y);
+    bool GetEnclosedState(uint8_t *position);
+
+    bool SetEnclosedState(uint8_t x, uint8_t y, bool state);
+    bool SetEnclosedState(uint8_t *position, bool state);
+
+    void FloodEnclosed(uint8_t x, uint8_t y);          // Passe toutes les cases UNKNOWN connectés à la case d'entée en enclosed = true
+    void FloodEnclosed(uint8_t *position);
 
     // Interface avec les liens/distances/passages reliant les cases aux autres cases
     bool AddNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight);   // Ajoute un passage entre deux cases                     
@@ -61,7 +73,7 @@ public:
     bool RemoveNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);                // Supprime un passage entre deux cases                   
     bool RemoveNeighbour(uint8_t *position1, uint8_t *position2);                       
 
-    const std::unique_ptr<std::list<const Case *>> GetNeighbours(uint8_t x, uint8_t y);              // Renvoie la liste des cases adjacentes/reliées a la case
+    const std::unique_ptr<std::list<const Case *>> GetNeighbours(uint8_t x, uint8_t y);  // Renvoie la liste des cases adjacentes/reliées a la case
     const std::unique_ptr<std::list<const Case *>> GetNeighbours(uint8_t *position);                
                                                                                         
     bool ModifyDistance(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight); // Modifie la distance entre deux cases                   

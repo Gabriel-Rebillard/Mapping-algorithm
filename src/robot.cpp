@@ -215,9 +215,10 @@ bool Robot::FollowPath()
     return 0;
 }
 
-bool Robot::ClosedRoom(Map *map)
+int Robot::ClosedRoom(Map *map)
 {
-    int sides = 0;
+    uint8_t sides = 0;
+    int enclosedNum = 0;
     for (int i = 0; i < map->GetHeight(); i++)
     {
         for (int j = 0; j < map->GetWidth(); j++)
@@ -225,46 +226,49 @@ bool Robot::ClosedRoom(Map *map)
             sides = 0;
             if (map->GetCaseType(i,j) == UNKNOWN_ID)
             {
-                for (int x = i; x < map->GetHeight(); x++)
-                {
-                    if (map->GetCaseType(x,j) == WALL_ID)
+                if(map->GetEnclosedState(i,j) == false){
+                    for (int x = i; x < map->GetHeight(); x++)
                     {
-                        sides++;
-                        break;
+                        if (map->GetCaseType(x,j) == WALL_ID)
+                        {
+                            sides++;
+                            break;
+                        }
+                    }
+                    for (int x = i; x > 0; x--)
+                    {
+                        if (map->GetCaseType(x,j) == WALL_ID)
+                        {
+                            sides++;
+                            break;
+                        }
+                    }
+                    for (int y = j; y < map->GetWidth(); y++)
+                    {
+                        if (map->GetCaseType(i,y) == WALL_ID)
+                        {
+                            sides++;
+                            break;
+                        }
+                    }
+                    for (int y = j; y < map->GetWidth(); y++)
+                    {
+                        if (map->GetCaseType(i,y) == WALL_ID)
+                        {
+                            sides++;
+                            break;
+                        }
+                    }
+                    if (sides == 4)
+                    {
+                        map->FloodEnclosed(i,j);
+                        enclosedNum++;
                     }
                 }
-                for (int x = i; x > 0; x--)
-                {
-                    if (map->GetCaseType(x,j) == WALL_ID)
-                    {
-                        sides++;
-                        break;
-                    }
-                }
-                for (int y = j; y < map->GetWidth(); y++)
-                {
-                    if (map->GetCaseType(i,y) == WALL_ID)
-                    {
-                        sides++;
-                        break;
-                    }
-                }
-                for (int y = j; y < map->GetWidth(); y++)
-                {
-                    if (map->GetCaseType(i,y) == WALL_ID)
-                    {
-                        sides++;
-                        break;
-                    }
-                }
-            }
-            if (sides == 4)
-            {
-                return true;
             }
         }
     }
-    return false;
+    return enclosedNum;
 }
 
 void Robot::AnalyzeEnvironment(Map *map, uint8_t start_point_x, uint8_t start_point_y)

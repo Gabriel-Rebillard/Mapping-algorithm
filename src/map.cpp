@@ -10,6 +10,15 @@ uint8_t Case::GetVisitedCount()
     return _VisitedCount;
 }
 
+bool Case::GetEnclosed()
+{
+    return _Enclosed;
+}
+void Case::SetEnclosed(bool state)
+{
+    _Enclosed = state;
+}
+
 // Map definition *********************************************************************
 Map::Map(uint8_t width, uint8_t height) : _Graph(width * height)
 {
@@ -75,6 +84,48 @@ bool Map::SetCaseType(uint8_t x, uint8_t y, uint8_t type)
 bool Map::SetCaseType(uint8_t *position, uint8_t type)
 {
     return SetCaseType(position[0], position[1], type);
+}
+
+bool Map::GetEnclosedState(uint8_t x, uint8_t y)
+{
+    return GetCase(x,y)->GetEnclosed();
+}
+bool Map::GetEnclosedState(uint8_t *position)
+{
+    return GetEnclosedState(position[0], position[1]);
+}
+
+bool Map::SetEnclosedState(uint8_t x, uint8_t y, bool state)
+{
+    if (GetCase(x,y) == nullptr)
+    {
+        return 0;
+    }
+    GetCase(x,y)->SetEnclosed(state);
+    return 1;
+    
+}
+bool Map::SetEnclosedState(uint8_t *position, bool state)
+{
+    return SetEnclosedState(position[0], position[1], state);
+}
+
+void Map::FloodEnclosed(uint8_t x, uint8_t y)
+{
+    if (GetCaseType(x,y) != UNKNOWN_ID || GetEnclosedState(x,y) == true)
+    {
+        return;
+    }
+    SetEnclosedState(x,y,true);
+
+    FloodEnclosed(x+1,y);
+    FloodEnclosed(x,y+1);
+    FloodEnclosed(x-1,y);
+    FloodEnclosed(x,y-1);
+}
+void Map::FloodEnclosed(uint8_t *position)
+{
+    FloodEnclosed(position[0], position[1]);
 }
 
 bool Map::AddNeighbour(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t weight)

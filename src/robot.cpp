@@ -149,6 +149,9 @@ void Robot::FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y)
     if (isFrontier(_Map.GetCaseType(_Position)))
         _Map.SetCaseType(_Position, removeFrontier(_Map.GetCaseType(_Position)));
 
+    if (_Map.GetCaseType(_Position) == ROOM_ID)
+        _Map.GetCase(_Position)->IncrementVisits();;
+
     // Cases filling
     for (uint8_t i = 0; i < 3; i++)
         for (uint8_t j = 0; j < 3; j++)

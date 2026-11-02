@@ -1,8 +1,10 @@
 #include "../includes/robot.h"
 
-Robot::Robot()
+Robot::Robot(uint8_t id)
     : _Map(3, 3)
 {
+    _RobotID = id;
+    
     _Position[0] = 1;
     _Position[1] = 1;
 
@@ -14,7 +16,7 @@ Robot::Robot()
     for (uint8_t i = 0; i < 3; i++)
         for (uint8_t j = 0; j < 3; j++)
             _Map.SetCaseType(i, j, UNKNOWN_ID);
-    _Map.SetCaseType(_Position, ROBOT_BASE_ID);
+    _Map.SetCaseType(_Position, ROBOT_BASE_ID + id);
 }
 
 void Robot::ExtendMap(uint8_t direction)
@@ -304,6 +306,19 @@ uint8_t *Robot::GetPosition()
 uint8_t *Robot::GetStartPoint()
 {
     return _StartPoint;
+}
+
+uint8_t Robot::GetId(){
+    return _RobotID;
+}
+uint8_t Robot::GetVictimCount()
+{
+    return _VictimCount;
+}
+
+const std::vector<const uint8_t *> *Robot::GetVictimPositions()
+{
+    return &_VictimPositions;
 }
 
 // ============================================================================

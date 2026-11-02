@@ -6,6 +6,8 @@
 class Robot
 {
 private:
+    uint8_t _RobotID;
+
     Map _Map;
     std::vector<uint8_t> _CurrentPath;
 
@@ -79,6 +81,15 @@ public:
 
     // Renvoi un pointeur vers le point de depart du robot
     uint8_t *GetStartPoint();
+
+     // Renvoi l'identifiant du robot
+    uint8_t GetId();
+
+    // Renvoi le nombre de victimes trouvées
+    uint8_t GetVictimCount();
+
+    // Renvoi un pointeur vers la position des victimes
+    const std::vector<const uint8_t *> *GetVictimPositions();
 
     // --- Ajout Erwan : exploration -------------------------------------------
     static const uint8_t NO_DIRECTION = 0xFF;   // aucune direction utile

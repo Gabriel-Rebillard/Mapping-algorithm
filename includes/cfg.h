@@ -29,6 +29,17 @@
 #define ROBOT_SYMBOL "🟦"
 #define ROBOT_BASE_SYMBOL "🟫"
 #define PORTAL_SYMBOL "🔄"
+#define EMPTY_LINE "                                                            "
+
+#define WALL_COLOR "\033[48;2;224;224;224m"    // "rgb(224 224 224)"
+#define ROOM_COLOR "\033[48;2;85;255;99m"      // "rgb(85 255 99)"  
+#define VICTIM_COLOR "\033[48;2;226;40;40m"    // "rgb(226 40 40)"  
+#define UNKNOWN_COLOR "\033[48;2;32;32;32m"    // "#202020"         
+#define FRONTIER_COLOR "\033[48;2;255;170;0m"  // "#FFAA00"         
+#define ROBOT_COLOR "\033[48;2;43;43;255m"     // "#2B2BFF"         
+#define ROBOT_BASE_COLOR "\033[48;2;153;56;0m" // "#993800"         
+#define PORTAL_COLOR "\033[48;2;187;0;156m"    // "#BB009C"
+
 
 // Definition des types entier non signé sur 8 et 16 bits
 #ifndef uint8_t
@@ -48,7 +59,7 @@ typedef unsigned short uint16_t;
 #define GENERATOR_PILLAR_PROBABILITY 0.05
 
 #define GENERATOR_VICTIM_NUMBER 5
-#define GENERATOR_ROBOT_NUMBER 1
+#define GENERATOR_ROBOT_NUMBER 2
 #define GENERATOR_PORTAL_NUMBER 0
 
 // Definition des directions

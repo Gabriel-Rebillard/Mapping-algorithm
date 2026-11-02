@@ -46,7 +46,7 @@ private:
     // -------------------------------------------------------------------------
 
 public:
-    Robot();
+    Robot(uint8_t id);
 
     // Rempli les cases autour du robot si elles sont inconnues
     void FillMap(Map *map, uint8_t start_point_x, uint8_t start_point_y);

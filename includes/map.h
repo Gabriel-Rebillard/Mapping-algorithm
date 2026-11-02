@@ -13,7 +13,7 @@ private:
 
 public:
     Case(uint8_t type = NaN);
-    void IncrementVisits()
+    void IncrementVisits();
     uint8_t GetVisitedCount();  // Retourne le nombre de fois que la case a été visite
 
     bool GetEnclosed();

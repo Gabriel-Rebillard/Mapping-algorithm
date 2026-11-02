@@ -1,6 +1,5 @@
 #include "../includes/mapReader.h"
 
-
 uint8_t *GetSize(std::ifstream &file)
 {
     uint8_t *size = new uint8_t[2];
@@ -60,7 +59,6 @@ void ReadBitMap(std::ifstream &file, bool **map, uint8_t width, uint8_t height)
     }
 }
 
-
 void DisplayMap(int **map, uint8_t width, uint8_t height)
 {
     std::string symbol = ROOM_SYMBOL;
@@ -90,7 +88,7 @@ void DisplayMap(int **map, uint8_t width, uint8_t height)
                     symbol = ROBOT_SYMBOL;
                     break;
 
-                case ROBOT_BASE_ID:
+                case ROBOT_BASE_ID ... ROBOT_BASE_ID + GENERATOR_ROBOT_NUMBER - 1:
                     symbol = ROBOT_BASE_SYMBOL;
                     break;
 
@@ -129,13 +127,92 @@ void DisplayMap(Map *map)
         delete[] mat[i];
     delete[] mat;
 }
+void DisplayMapSVG(Map *map)
+{
+    uint8_t h = map->GetHeight();
+    uint8_t w = map->GetWidth();
+
+    for (int i = 0; i < w; i++)
+    {
+        for (int j = 0; j < h; j++)
+        {
+            if (isFrontier(map->GetCaseType(i, j)))
+                std::cout << FRONTIER_COLOR;
+            else
+            {
+                switch (map->GetCaseType(i, j))
+                {
+                case WALL_ID:
+                    std::cout << WALL_COLOR;
+                    break;
+
+                case UNKNOWN_ID:
+                    std::cout << UNKNOWN_COLOR;
+                    break;
+
+                case VICTIM_ID:
+                    std::cout << VICTIM_COLOR;
+                    break;
+
+                case ROBOT_ID:
+                    std::cout << ROBOT_COLOR;
+                    break;
+
+                case ROBOT_BASE_ID ... ROBOT_BASE_ID + GENERATOR_ROBOT_NUMBER - 1:
+                    std::cout << ROBOT_BASE_COLOR;
+                    break;
+
+                case PORTAL_ID:
+                    std::cout << PORTAL_COLOR;
+                    break;
+
+                default:
+                    std::string s = ROOM_COLOR;
+                    s.erase(0, s.find(";") + 1);
+                    s.erase(0, s.find(";") + 1);
+                    uint8_t grad = std::clamp(map->GetCase(i, j)->GetVisitedCount() * 10, 0, 255);
+                    uint8_t r = std::clamp(std::stoi(s.substr(0, s.find(";"))) - grad, 0, 255);
+                    s.erase(0, s.find(";") + 1);
+                    uint8_t g = std::clamp(std::stoi(s.substr(0, s.find(";"))) - grad, 0, 255);
+                    s.erase(0, s.find(";") + 1);
+                    uint8_t b = std::clamp(std::stoi(s.substr(0, s.find(";"))) - grad, 0, 255);
+                    std::cout << "\033[48;2;" << (int)r << ";" << (int)g << ";" << (int)b << "m";
+                    break;
+                }
+            }
+            std::cout << "  ";
+        }
+
+        std::cout << "\033[0m" << std::endl;
+    }
+}
+
+void PrintEmptyLine(uint8_t n)
+{
+    std::cout << "\033[0m" << std::endl;
+    for (uint8_t i = 0; i < n; i++)
+        std::cout << EMPTY_LINE << std::endl;
+}
+
+void DisplayRobot(Map *map, Robot &robot, Case &temp, uint8_t *robotStart)
+{
+    temp = *robot.GetMap()->GetCase(robot.GetPosition()[0], robot.GetPosition()[1]);
+    robot.GetMap()->SetCaseType(robot.GetPosition()[0], robot.GetPosition()[1], ROBOT_ID);
+    map->SetCaseType(robotStart[0] - robot.GetStartPoint()[0] + robot.GetPosition()[0], robotStart[1] - robot.GetStartPoint()[1] + robot.GetPosition()[1], ROBOT_ID);
+}
+void RemoveDisplayedRobot(Map *map, Robot &robot, Case &temp, uint8_t *robotStart)
+{
+    robot.GetMap()->SetCaseType(robot.GetPosition()[0], robot.GetPosition()[1], temp.GetValue());
+    map->SetCaseType(robotStart[0] - robot.GetStartPoint()[0] + robot.GetPosition()[0], robotStart[1] - robot.GetStartPoint()[1] + robot.GetPosition()[1], temp.GetValue());
+}
 
 uint8_t *findStart(Map *map, uint8_t robot)
 {
     uint8_t *start = new uint8_t[2];
-    
+
     auto findedIte = std::find_if(map->GetMap().GetGraph()->begin(), map->GetMap().GetGraph()->end(),
-        [robot](const std::unique_ptr<Vertex> &ptr){return ptr.get()->GetValue() == ROBOT_BASE_ID + robot;});
+                                  [robot](const std::unique_ptr<Vertex> &ptr)
+                                  { return ptr.get()->GetValue() == ROBOT_BASE_ID + robot; });
 
     start = map->GetCasePosition(static_cast<Case *>((*findedIte).get()));
 
@@ -147,14 +224,12 @@ void CloseFile(std::ifstream &file)
     file.close();
 }
 
-
-
 void ClearConsole()
 {
     system("clear");
 }
 
-void gotoxy(int x,int y)    
+void gotoxy(int x, int y)
 {
-    printf("%c[%d;%df",0x1B,y,x);
+    printf("%c[%d;%df", 0x1B, y, x);
 }

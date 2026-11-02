@@ -11,15 +11,19 @@ int main(int argc, char **argv)
 {
     // Help infos 
     if (argv[1] == NULL || argv[1] == "-h" || argv[1] == "--help" || argv[1] == "help"){
-        std::cout << "Usage : ./main <width> <height> [seed]" << std::endl;
+        std::cout << "Usage : ./main <width> <height> [robot_speed] [seed]" << std::endl;
         return 0;
     }
 
     // Seed selection
-    if (argv[3] != NULL)
-        srand(std::stoi(argv[3]));
+    if (argc > 4)
+        srand(std::stoi(argv[4]));
     else
         srand((unsigned)time(NULL));
+
+    unsigned short robotSpeed = 100;
+    if (argc > 3)
+        robotSpeed = std::stoi(argv[3]);
 
     ClearConsole();
 
@@ -28,50 +32,75 @@ int main(int argc, char **argv)
     int w = std::stoi(argv[1]) , h = std::stoi(argv[2]);
     std::unique_ptr<Map> map = generateMap(w, h);
 
+    Case c(10);
+
+    std::cout << (int)c.GetVisitedCount() << std::endl; 
+    std::cout << (int)map->GetCase(3, 3)->GetVisitedCount() << std::endl;
+    std::cout << (int)map->GetCase(3, 3)->GetValue() << std::endl;
 
     // Display map
-    DisplayMap(map.get());
-
-
+    DisplayMapSVG(map.get());
+    
     // TESTS ****************************************************************************************
-    Robot robot = Robot();
-    uint8_t* robotStart = findStart(map.get());
-    std::cout << "robot start : x : " << (int)robotStart[0] << "\ty : " << (int)robotStart[1] << std::endl;
-    robot.FillMap(map.get(), robotStart[0], robotStart[1]);
+    Robot robot1 = Robot(0);
+    Robot robot2 = Robot(1);
+    uint8_t* robot1Start = findStart(map.get(), 0);
+    uint8_t* robot2Start = findStart(map.get(), 1);
+
+    std::cout << (int)map->GetCaseType(robot1Start[0], robot1Start[1]) << std::endl;
+    std::cout << (int)map->GetCaseType(robot2Start[0], robot2Start[1]) << std::endl;
+
+    std::cout << "robot1 start : x : " << (int)robot1Start[0] << "\ty : " << (int)robot1Start[1] << std::endl;
+    std::cout << "robot2 start : x : " << (int)robot2Start[0] << "\ty : " << (int)robot2Start[1] << std::endl;
+    robot1.AnalyzeEnvironment(map.get(), robot1Start);
+    robot2.AnalyzeEnvironment(map.get(), robot2Start);
 
 
-    Case temp = *robot.GetMap()->GetCase(1, 1);
-    map->SetCaseType(robotStart, ROBOT_ID);
-    robot.GetMap()->SetCaseType(robotStart, ROBOT_ID);
-    DisplayMap(robot.GetMap());
+    Case temp1, temp2;
+
+    DisplayRobot(map.get(), robot1, temp1, robot1Start);
+    DisplayRobot(map.get(), robot2, temp2, robot2Start);
+
+    DisplayMap(robot1.GetMap());
+    std::cout << std::endl << std::endl;
+    DisplayMap(robot2.GetMap());
     std::cout << std::endl;
 
     
     std::cin.ignore();
     ClearConsole();
 
-    for (int i = 0; i < 500; i++){
-        robot.GetMap()->SetCaseType(robot.GetPosition()[0], robot.GetPosition()[1], temp.GetValue());
-        map->SetCaseType(robotStart[0] - robot.GetStartPoint()[0] + robot.GetPosition()[0], robotStart[1] - robot.GetStartPoint()[1] + robot.GetPosition()[1], temp.GetValue());
-        while (!robot.Move(rand() % 4));
+    for (int i = 0; i < 2000; i++){
+        RemoveDisplayedRobot(map.get(), robot1, temp1, robot1Start);
+        RemoveDisplayedRobot(map.get(), robot2, temp2, robot2Start);
 
-        robot.AnalyzeEnvironment(map.get(), robotStart);
+        while (!robot1.Move(rand() % 4) || !robot2.Move(rand() % 4));
+
+        robot1.AnalyzeEnvironment(map.get(), robot1Start);
+        robot2.AnalyzeEnvironment(map.get(), robot2Start);
         
-        temp = *robot.GetMap()->GetCase(robot.GetPosition()[0], robot.GetPosition()[1]);
-        robot.GetMap()->SetCaseType(robot.GetPosition()[0], robot.GetPosition()[1], ROBOT_ID);
-        map->SetCaseType(robotStart[0] - robot.GetStartPoint()[0] + robot.GetPosition()[0], robotStart[1] - robot.GetStartPoint()[1] + robot.GetPosition()[1], ROBOT_ID);
+        DisplayRobot(map.get(), robot1, temp1, robot1Start);
+        DisplayRobot(map.get(), robot2, temp2, robot2Start);
 
         //ClearConsole();
         gotoxy(0, 0);
-        //DisplayMap(map.get());
-        DisplayMap(robot.GetMap());
+        DisplayMapSVG(map.get());
+        PrintEmptyLine(2);
+        DisplayMapSVG(robot1.GetMap());
+        std::cout << (int)robot1.GetMap()->GetCaseType(2, 2) << "  " << (int)robot1.GetMap()->GetCase(2, 2)->GetVisitedCount() << std::endl;
+        PrintEmptyLine(2);
+        DisplayMapSVG(robot2.GetMap());
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(robotSpeed));
     }
     ClearConsole();
-    DisplayMap(map.get());
+    DisplayMapSVG(map.get());
     std::cout << std::endl;
-    DisplayMap(robot.GetMap());
+    DisplayMapSVG(robot1.GetMap());
+    std::cout << std::endl << std::endl;
+    DisplayMapSVG(robot2.GetMap());
+
+    
     
     /*
     // neighbours verification on case (2;2)

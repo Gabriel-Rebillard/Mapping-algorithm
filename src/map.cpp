@@ -3,8 +3,12 @@
 // Case definition *********************************************************************
 Case::Case(uint8_t type) : Vertex(type)
 {
+    _VisitedCount = 0;
 }
 
+void Case::IncrementVisits(){
+    _VisitedCount++;
+}
 uint8_t Case::GetVisitedCount()
 {
     return _VisitedCount;

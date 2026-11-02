@@ -1,7 +1,6 @@
 #pragma once
 #include "map.h"
 #include "cfg.h"
-#include <iostream>
 
 class Robot
 {
@@ -16,7 +15,7 @@ private:
 
     std::vector<uint16_t> _DetectionDistance;   // Distance parcourue entre le debut de l'exploration et la nieme victime
     uint8_t _VictimCount = 0;                   // Nombre de victimes trouvées
-    std::vector<uint8_t*> _VictimPositions;     // Position des victimes
+    std::vector<const uint8_t*> _VictimPositions;     // Position des victimes
     uint16_t _MoveCount = 0;                    // Nombre total de mouvements effectues
 
     // Augmente la taille de la carte en fonction de la direction : ajoute une colonne ou une ligne en haut/bas/gauche/droite

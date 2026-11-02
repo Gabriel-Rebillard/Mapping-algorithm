@@ -33,9 +33,9 @@ void Graph::AddVertex(int value)
 {
     _Graph.push_back(std::unique_ptr<Vertex>(new Vertex(value)));
 }
-void Graph::AddVertex(Vertex vertex)
+void Graph::AddVertex(Vertex *vertex)
 {
-    _Graph.push_back(std::make_unique<Vertex>(vertex));
+    _Graph.push_back(std::unique_ptr<Vertex>(vertex));
 }
 void Graph::AddVertex(unsigned int position, int value)
 {

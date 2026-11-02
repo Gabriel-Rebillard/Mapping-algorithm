@@ -54,7 +54,7 @@ public:
 
     // Vertex manipulation interface
     void AddVertex(int value = 0);                                                                            // Adds a vertex to the graph                                                           
-    void AddVertex(Vertex vertex);                                                                           
+    void AddVertex(Vertex *vertex);                                                                           
     void AddVertex(unsigned int position, int value);                                                        
 
     bool RemoveVertex(Vertex *vertex);                                                                        // Removes a vertex from the graph, returns false if the vertex does not exist          

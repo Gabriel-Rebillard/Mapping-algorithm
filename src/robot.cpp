@@ -1,4 +1,6 @@
 #include "../includes/robot.h"
+#include <algorithm>
+#include <cstdlib>
 
 Robot::Robot(uint8_t id)
     : _Map(3, 3)
@@ -403,4 +405,205 @@ uint8_t Robot::Check()
         }
     }
     return meilleure;
+}
+
+// ============================================================================
+// A* (ajout Erwan) : implementation
+// ============================================================================
+/*
+    A* adapté au projet Mapping-algorithm.
+
+    Basé sur "a-star" de Damian Barczyński : https://github.com/daancode/a-star
+
+    Modifications par rapport à l'original :
+      - lit les murs directement dans la carte du projet (Map) au lieu d'une liste
+      - les cases MUR et INCONNUES sont infranchissables
+      - 4 directions seulement (UP, RIGHT, DOWN, LEFT), coût de 1 par pas
+      - renvoie la liste des directions à suivre, du départ vers l'arrivée
+      - renvoie false si aucun chemin n'existe (l'original renvoyait un faux chemin)
+      - à score égal, préfère la case la plus proche de l'arrivée
+*/
+
+AStar::Node::Node(Vec2i coordinates_, Node *parent_, uint8_t move_)
+{
+    parent = parent_;
+    coordinates = coordinates_;
+    move = move_;
+    G = H = 0;
+}
+
+AStar::uint AStar::Node::getScore() const
+{
+    return G + H;
+}
+
+AStar::Generator::Generator(Map *map_)
+{
+    map = map_;
+    // L'ordre n'a pas d'importance pour la longueur du chemin, seulement pour les égalités
+    steps = {
+        {UP, {0, -1}},
+        {RIGHT, {1, 0}},
+        {DOWN, {0, 1}},
+        {LEFT, {-1, 0}},
+    };
+}
+
+bool AStar::Generator::findPath(Vec2i source_, Vec2i target_, std::vector<uint8_t> &path_)
+{
+    path_.clear();
+
+    // Déjà arrivé
+    if (source_ == target_)
+        return true;
+
+    // Arrivée infranchissable : inutile de chercher
+    if (detectCollision(target_))
+        return false;
+
+    Node *current = nullptr;
+    NodeSet openSet, closedSet;
+    openSet.reserve(100);
+    closedSet.reserve(100);
+
+    Node *start = new Node(source_);
+    start->H = manhattan(source_, target_);
+    openSet.push_back(start);
+
+    bool found = false;
+
+    while (!openSet.empty())
+    {
+        // 1. Prendre la case de la liste ouverte avec le plus petit f = G + H
+        //    (à égalité, celle qui a le plus petit H : la plus proche de l'arrivée)
+        auto current_it = openSet.begin();
+        current = *current_it;
+        for (auto it = openSet.begin(); it != openSet.end(); it++)
+        {
+            Node *node = *it;
+            if (node->getScore() < current->getScore() ||
+                (node->getScore() == current->getScore() && node->H < current->H))
+            {
+                current = node;
+                current_it = it;
+            }
+        }
+
+        // 2. Arrivée atteinte
+        if (current->coordinates == target_)
+        {
+            found = true;
+            break;
+        }
+
+        // 3. La case passe de la liste ouverte à la liste fermée
+        closedSet.push_back(current);
+        openSet.erase(current_it);
+
+        // 4. Examiner les 4 voisins
+        for (const Step &step : steps)
+        {
+            Vec2i newCoordinates = current->coordinates + step.delta;
+            if (detectCollision(newCoordinates) || findNodeOnList(closedSet, newCoordinates))
+                continue;
+
+            uint totalCost = current->G + 1; // 1 pas = coût 1
+
+            Node *successor = findNodeOnList(openSet, newCoordinates);
+            if (successor == nullptr)
+            {
+                // Nouvelle case découverte
+                successor = new Node(newCoordinates, current, step.dir);
+                successor->G = totalCost;
+                successor->H = manhattan(newCoordinates, target_);
+                openSet.push_back(successor);
+            }
+            else if (totalCost < successor->G)
+            {
+                // Chemin plus court trouvé vers une case déjà connue
+                successor->parent = current;
+                successor->move = step.dir;
+                successor->G = totalCost;
+            }
+        }
+    }
+
+    // 5. Reconstruire le chemin en remontant les parents, puis le remettre dans l'ordre
+    if (found)
+    {
+        for (Node *n = current; n->parent != nullptr; n = n->parent)
+            path_.push_back(n->move);
+        std::reverse(path_.begin(), path_.end());
+    }
+
+    releaseNodes(openSet);
+    releaseNodes(closedSet);
+
+    return found;
+}
+
+AStar::Node *AStar::Generator::findNodeOnList(NodeSet &nodes_, Vec2i coordinates_)
+{
+    for (Node *node : nodes_)
+        if (node->coordinates == coordinates_)
+            return node;
+    return nullptr;
+}
+
+void AStar::Generator::releaseNodes(NodeSet &nodes_)
+{
+    for (Node *node : nodes_)
+        delete node;
+    nodes_.clear();
+}
+
+bool AStar::Generator::detectCollision(Vec2i coordinates_)
+{
+    // Hors de la carte
+    if (coordinates_.x < 0 || coordinates_.y < 0 ||
+        coordinates_.x >= (int)map->GetWidth() || coordinates_.y >= (int)map->GetHeight())
+        return true;
+
+    // On retire le bit "frontière" pour ne garder que le type de la case
+    uint8_t type = removeFrontier(map->GetCaseType((uint8_t)coordinates_.x, (uint8_t)coordinates_.y));
+    return type == WALL_ID || type == UNKNOWN_ID;
+}
+
+AStar::uint AStar::manhattan(Vec2i source_, Vec2i target_)
+{
+    return std::abs(source_.x - target_.x) + std::abs(source_.y - target_.y);
+}
+
+// ============================================================================
+// A* : chemin le plus court vers une case (ajout Erwan)
+// ============================================================================
+
+// Cherche le chemin le plus court vers (x, y) dans la carte du robot
+// Remplit _CurrentPath avec les directions a suivre
+// Renvoie le nombre de pas, ou NO_PATH si la case est inaccessible
+uint16_t Robot::FindPath(uint8_t x, uint8_t y)
+{
+    AStar::Generator generator(&_Map);
+    std::vector<uint8_t> path;
+
+    if (!generator.findPath({_Position[0], _Position[1]}, {x, y}, path))
+        return NO_PATH;
+
+    _CurrentPath = path;
+    return path.size();
+}
+
+uint16_t Robot::FindPath(uint8_t *destination)
+{
+    return FindPath(destination[0], destination[1]);
+}
+
+bool Robot::GoTo(uint8_t x, uint8_t y)
+{
+    return FindPath(x, y) != NO_PATH;
+}
+
+bool Robot::HasPath()
+{
+    return !_CurrentPath.empty();
 }

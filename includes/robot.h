@@ -2,6 +2,68 @@
 #include "map.h"
 #include "cfg.h"
 #include <iostream>
+#include <vector>
+
+// ============================================================================
+// A* (ajout Erwan) : recherche du plus court chemin dans la carte du robot
+// Base sur https://github.com/daancode/a-star (licence MIT, voir robot.cpp)
+// ============================================================================
+namespace AStar
+{
+    // Coordonnées en int (et non uint8_t) pour pouvoir être négatives sans boucler à 255
+    struct Vec2i
+    {
+        int x, y;
+
+        bool operator==(const Vec2i &other) const { return x == other.x && y == other.y; }
+        friend Vec2i operator+(const Vec2i &a, const Vec2i &b) { return {a.x + b.x, a.y + b.y}; }
+    };
+
+    using uint = unsigned int;
+
+    // Un noeud = une case explorée par A*
+    struct Node
+    {
+        uint G;             // coût réel depuis le départ
+        uint H;             // estimation du coût restant (heuristique)
+        Vec2i coordinates;  // position de la case
+        Node *parent;       // case d'où l'on vient par le meilleur chemin connu
+        uint8_t move;       // direction prise depuis le parent pour arriver ici
+
+        Node(Vec2i coordinates_, Node *parent_ = nullptr, uint8_t move_ = 0);
+        uint getScore() const; // f = G + H
+    };
+
+    using NodeSet = std::vector<Node *>;
+
+    class Generator
+    {
+    public:
+        explicit Generator(Map *map_);
+
+        // Cherche le plus court chemin de source_ à target_.
+        // Si un chemin existe : remplit path_ avec les directions (UP, RIGHT, DOWN, LEFT) et renvoie true.
+        // Sinon : vide path_ et renvoie false.
+        bool findPath(Vec2i source_, Vec2i target_, std::vector<uint8_t> &path_);
+
+    private:
+        bool detectCollision(Vec2i coordinates_);                 // true si la case est infranchissable
+        Node *findNodeOnList(NodeSet &nodes_, Vec2i coordinates_); // cherche une case dans une liste
+        void releaseNodes(NodeSet &nodes_);                       // libère la mémoire d'une liste
+
+        struct Step
+        {
+            uint8_t dir; // UP, RIGHT, DOWN ou LEFT
+            Vec2i delta; // décalage correspondant
+        };
+
+        Map *map;
+        std::vector<Step> steps;
+    };
+
+    // Distance de Manhattan : admissible pour 4 directions avec un coût de 1 par pas
+    uint manhattan(Vec2i source_, Vec2i target_);
+}
 
 class Robot
 {
@@ -93,5 +155,10 @@ public:
     // --- Ajout Erwan : exploration -------------------------------------------
     static const uint8_t NO_DIRECTION = 0xFF;   // aucune direction utile
     uint8_t Check();                            // direction qui découvre le plus de cases
+
+    // A* : calcule le chemin vers (x, y) dans _CurrentPath ; false si inaccessible
+    static const uint16_t NO_PATH = 0xFFFF;
+    bool GoTo(uint8_t x, uint8_t y);
+    bool HasPath();                             // true s'il reste des mouvements dans _CurrentPath
     // -------------------------------------------------------------------------
 };
